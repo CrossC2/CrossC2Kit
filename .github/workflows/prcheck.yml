@@ -15,6 +15,7 @@ jobs:
           id: build
           run: |
             uname -a
+            cp -r third-party /tmp/third-party
             cp compile.sh /tmp/
             cd /tmp
             chmod 755 compile.sh
@@ -41,6 +42,7 @@ jobs:
           id: build2
           run: |
             uname -a
+            cp -r third-party /tmp/third-party
             cp compile.sh /tmp/
             cd /tmp
             chmod 755 compile.sh
