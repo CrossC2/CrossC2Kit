@@ -1,4 +1,4 @@
-# README.md
+# CrossC2 Kit
 
 CrossC2Kit is an infiltration expansion around the Unix platform derived from CrossC2. Use **Aggressor Script** Open Source Script engine. It can be used to create automation to simulate the operation process of the Red Team and expand the **CobaltStrike** client.
 

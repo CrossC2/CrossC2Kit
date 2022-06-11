@@ -1,4 +1,4 @@
-# README_zh.md
+# CrossC2 Kit
 
 CrossC2Kit 是围绕着CrossC2 衍生出的Unix平台后渗透扩展，采用 **Aggressor Script** 开源脚本引擎。可以用来创建自动化来模拟红队操作过程，以及扩展CobaltStrike客户端。
 
