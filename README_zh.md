@@ -1,34 +1,89 @@
-# CrossC2 Kit
+# README_zh.md
 
-[README](README.md) | [中文文档](README_zh.md)
+CrossC2Kit 是围绕着CrossC2 衍生出的Unix平台后渗透扩展，采用 **Aggressor Script** 开源脚本引擎。可以用来创建自动化来模拟红队操作过程，以及扩展CobaltStrike客户端。
 
-- **`cc2FilesColor.cna`** - 支持CrossC2会话的彩色显示文件列表。 基于 [@mgeeky](https://github.com/mgeeky/cobalt-arsenal/blob/master/FilesColor.cna) 的`FilesColor.cn`，该脚本根据文件类型和扩展名对文件列表输出进行着色，例如标注office文档或源码、数据库文件等。
-  
-  使用`ls`命令进行显示:
-![](media/16295280892271/16295285029337.jpg)
+CrossC2Kit 整体继承于CobaltStrike原有的功能，所以开发与编写语法仍然参照官方文档: https://trial.cobaltstrike.com/aggressor-script/index.html
 
-- **`cc2ProcessColor.cna`** - 支持CrossC2会话的彩色显示进程列表。 基于 [@r3dQu1nn](https://github.com/harleyQu1nn/AggressorScripts/blob/master/ProcessColor.cna) 的 `ProcessColor.cna`。采用CS中的`ps`输出和颜色编码所有 AV 进程，资源管理器进程，浏览器进程，以及当前正在运行的进程。如果进程可以dump密码，则会进行`(dump password)`显示提示。
 
-  使用`ps`命令进行显示:
 ![](media/16295280892271/16295284817531.jpg)
 
-## CrossC2kit
+但它在 CrossC2 之上又进行了一些API拓展，用于控制 Unix 平台beacon，主要功能为从内存解析执行用户下发的 动态库 ( .so / .dylib ) 与 可执行文件 ( ELF / MachO ) 以及 脚本 ( bash / python / php ... )。同时预留了CobaltStrike的一些数据集接口，例如
+`端口扫描`, `屏幕截图`, `键盘记录`, `密码凭证` 等等，可以快捷开发portscan等等套件。以及如果熟悉CS原生协议的话，可以指定更加复杂的一些数据结果等进行更灵活的元数据收集。
+![](media/15854585486601/15854593957704.jpg)
 
-- **`解释器相关插件`** - 支持调用主机中的 **bash** / **python** / **ruby** / **perl** / **php** 等脚本解释器，执行传入的脚本。该插件将重定向解释器I/O，直接从内存中进行输入输出，不会有文件落地执行。同时也集成了类似于`powershell-import`操作的`python-import`
-    * python c:\getsysteminfo.py
-    * python import base64;print base64.b64encode('whoami'); print 'a'*40
-    * python-import c:\test.py
+## 基础功能:
 
-- **`密码dump模块`** - cc2_mimipenguin 采用开源项目 MimiPenguin2.0
+内存解释器、内存执行、密码dump、认证后门、信息收集（浏览器、keychain），流量代理，键盘记录模块，网络探测模块，权限提升，任务管理等。
 
-- **`认证后门模块`** - cc2_auth, cc2_ssh sudo/su/passwd等认证后门，ssh被连接及连接其他主机的凭证都将被记录
+详情见wiki: [About CrossC2Kit](https://github.com/CrossC2/CrossC2Kit/wiki/About-CrossC2-Kit)
 
-- **`信息收集模块`** - cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump 常见浏览器的访问记录，以及iMessage聊天内容与钥匙串中保存的认证凭据都将被获取
+## API 文档: 
 
-- **`流量代理模块`** - cc2_frp 支持快速TCP/KCP(UDP)的反向socks5加密流量代理(server部署Github原生FRP即可)
+内存加载相关API: [API wiki](https://gloxec.github.io/CrossC2/zh_cn/api)
 
-- **`键盘记录模块`** - cc2_keylogger 记录MacOS用户的键盘输入
+API函数手册：[API Reference](https://github.com/CrossC2/CrossC2Kit/wiki/API-Reference)
 
-- **`权限提升模块`** - cc2_prompt_spoof 诱导欺骗获取MacOS用户账户密码。
+API demo链接：[/third-party/api_demo/load.cna](https://github.com/CrossC2/CrossC2Kit/blob/e5bcf1a60a829c80bf7cc139841c6ccac968a43b/third-party/api_demo/load.cna)
 
-- **`任务管理模块`** - cc2_job 管理内存中运行的模块。
+## 自定义拓展：
+
+使用 **CrossC2Kit** 开发自定义的扩展:
+将自定义的扩展按照分类、编译源码，配置文件等放入`third-party`文件夹中，客户端将会自动加载扩展的`load.cna`
+
+https://github.com/CrossC2/CrossC2Kit/blob/b108739d60abaafca66183fd1584bde6a8aa4aed/third-party/readme.md?plain=1#L11-L21
+
+详见例子: https://github.com/CrossC2/CrossC2Kit/tree/template/third-party
+
+
+## 插件提交方式
+
+1. git clone https://github.com/CrossC2/CrossC2Kit.git
+2. cd CrossC2Kit && mkdir third-party
+3. 将扩展插件置入该目录后进行 pull request
+4. pull request 项目将在自动编译通过后进行合并
+
+
+```c
+├── third-party
+│   ├── test.cna
+│   └── util
+│       ├── lpe  // 插件分类
+│       │   ├── cve-2021-1102       // 插件名称
+│       │   │   ├── load.cna        // 插件启动入口 *
+│       │   │   ├── readme.md       // 插件文档
+│       │   │   ├── src             // 插件包含的二进制组件源码目录
+│       │   │   │   ├── exp.c       // 待编译的源码 *
+│       │   │   │   └── makefile    // 自动编译的工程配置文件 *
+│       │   │   └── testa.cna       // 插件内部用到的cna脚本
+│       │   └── cve-2022-2202
+│       │       ├── load.cna
+│       │       ├── readme.md
+│       │       └── src
+│       │           ├── exp.c
+│       │           └── makefile
+│       └── pass
+│           ├── linux-login
+│           │   ├── load.cna
+│           │   └── src
+│           │       ├── exp.c
+│           │       └── makefile
+│           └── readme.md
+```
+
+5. 编译结果将在 **summary** 中显示，包含
+    
+    `系统架构信息`
+    
+    `编译过程`
+    
+    `编译结果符号信息`
+    
+    `Linux包含GLIBC版本信息`
+    
+    `编译整体结果` 
+    
+![](media/16295280892271/16547563992094.jpg)
+
+![](media/16295280892271/16547565084907.jpg)
+
+

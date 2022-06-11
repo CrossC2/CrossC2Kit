@@ -1,34 +1,105 @@
-# CrossC2 Kit
+# README.md
 
-[README](README.md) | [中文文档](README_zh.md)
+CrossC2Kit is an infiltration expansion around the Unix platform derived from CrossC2. Use **Aggressor Script** Open Source Script engine. It can be used to create automation to simulate the operation process of the Red Team and expand the **CobaltStrike** client.
 
-- **`cc2FilesColor.cna`** - Color Coded Files Listing for CrossC2. Based on the original `FilesColor.cn` by [@mgeeky](https://github.com/mgeeky/cobalt-arsenal/blob/master/FilesColor.cna) this script colorizes file listing outputs based on file type and extension.
+**CrossC2Kit** is inherited from the original features of **CobaltStrike**, so the development and writing grammar still refer to the official documentation: https://trial.cobaltstrike.com/aggressor-script/index.html
 
-  Use the `ls` command to display:
-![](media/16295280892271/16295285029337.jpg)
 
-- **`cc2ProcessColor.cna`** - Color Coded Process Listing for CrossC2. Based on the original `ProcessColor.cna` by [@r3dQu1nn](https://github.com/harleyQu1nn/AggressorScripts/blob/master/ProcessColor.cna).Takes the `ps` output in CS and color codes all AV processes, explorer process, browsers processes, and current process running.If the process can dump the password, it will display `(dump password)` to prompt.
-
-  Use the `ps` command to display:
 ![](media/16295280892271/16295284817531.jpg)
 
-## CrossC2kit
+However, it has also performed some API expansion on CrossC2 to control the UNIX platform Beacon. The main functions are to perform the dynamic library (`.so` / `.dylib`) and executable files (`ELF` / `MachO`) and executable files from memory parsing. Script (`bash` / `python` / `php` ...). At the same time, some data set interfaces of CobaltStrike are reserved, such as
+`portscan`, `screenshots`, `keylogger`, `credentials`, etc., can quickly develop **Portscan** and other kits. And if you are familiar with the CS native protocol, you can specify some more complicated data results for more flexible metadata collection.
+![](media/15854585486601/15854593957704.jpg)
 
-- **`Interpreter related plug-ins`** - Support calling script interpreters such as **bash** / **python** / **ruby** / **perl** / **php** in the host , Execute the incoming script. The plug-in will redirect the interpreter I/O, input and output directly from the memory, and no files will be executed on the ground. It also integrates `python-import` which is similar to `powershell-import` operation
-    * python c:\getsysteminfo.py
-    * python import base64;print base64.b64encode('whoami'); print 'a'*40
-    * python-import c:\test.py
+## basic function
+
+**`Interpreter related plug-ins`**
     
-- **`Password dump module`** - cc2_mimipenguin uses the open source project MimiPenguin2.0
+**`Password dump module`**
 
-- **`Authentication backdoor modules`** - cc2_auth, cc2_ssh sudo / su / passwd and other authentication backdoors, ssh is connected and the credentials to connect to other hosts will be recorded.
+**`Authentication backdoor modules`**
 
-- **`Information collection modules`** - cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump access records of common browsers, as well as iMessage chat content and authentication credentials saved in the keychain will be obtained
+**`Information collection modules`**
 
-- **`Traffic proxy module`** - cc2_frp supports fast TCP/KCP (UDP) reverse socks5 encrypted traffic proxy (server can deploy Github native FRP)
+**`Traffic proxy module`**
 
-- **`Keylogger module`** - cc2_keylogger records the keyboard input of MacOS users
+**`Keylogger module`**
 
-- **`Privilege promotion module`** - cc2_prompt_spoof induces deception to obtain MacOS user account password
+**`Privilege promotion module`**
 
-- **`Task management module块`** - cc2_job manages the modules running in memory.
+**`Task management module`**
+
+See wiki for details: [About CrossC2Kit](https://github.com/CrossC2/CrossC2Kit/wiki/About-CrossC2-Kit)
+
+## API 文档: 
+
+Memory loading related API: [API wiki](https://gloxec.github.io/CrossC2/zh_cn/api)
+
+API function manual：[API Reference](https://github.com/CrossC2/CrossC2Kit/wiki/API-Reference)
+
+API demo：[/third-party/api_demo/load.cna](https://github.com/CrossC2/CrossC2Kit/blob/e5bcf1a60a829c80bf7cc139841c6ccac968a43b/third-party/api_demo/load.cna)
+
+## Custom expansion
+
+Use **CrossC2Kit** to develop customized expansion:
+Put the custom extension according to the classification, compilation source code, configuration file, etc. into the `third-party` Folder, the client will automatically load the extended `load.cna`
+
+https://github.com/CrossC2/CrossC2Kit/blob/b108739d60abaafca66183fd1584bde6a8aa4aed/third-party/readme.md?plain=1#L11-L21
+
+For details: https://github.com/CrossC2/CrossC2Kit/tree/template/third-party
+
+
+## Pull Request
+
+1. git clone https://github.com/CrossC2/CrossC2Kit.git
+2. cd CrossC2Kit && mkdir third-party
+3. Place the extended plug-in in the **third-party** directory and perform **Pull Request**
+4. **Pull Request** will merge after automatic compilation
+
+
+
+
+```c
+├── third-party
+│   ├── test.cna
+│   └── util
+│       ├── lpe  // Type of plugin
+│       │   ├── cve-2021-1102       // The name of the plugin
+│       │   │   ├── load.cna        // Loading file of the plug-in *
+│       │   │   ├── readme.md       // Description document of plug-in
+│       │   │   ├── src             // The source code directory of binary components in the plugin
+│       │   │   │   ├── exp.c       // Source code to be compiled *
+│       │   │   │   └── makefile    // Automatic compiled configuration file *
+│       │   │   └── testa.cna       // CNA script used inside the plug-in
+│       │   └── cve-2022-2202
+│       │       ├── load.cna
+│       │       ├── readme.md
+│       │       └── src
+│       │           ├── exp.c
+│       │           └── makefile
+│       └── pass
+│           ├── linux-login
+│           │   ├── load.cna
+│           │   └── src
+│           │       ├── exp.c
+│           │       └── makefile
+│           └── readme.md
+```
+
+5. The compilation results will be displayed in **Summary**, including
+    
+    `System architecture information`
+    
+    `Compile process`
+    
+    `Compilation results symbol information`
+    
+    `GLIBC version information contained in Linux programs`
+    
+    `The overall result of compilation` 
+    
+![](media/16295280892271/16547563992094.jpg)
+
+![](media/16295280892271/16547565084907.jpg)
+
+
