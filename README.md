@@ -13,25 +13,11 @@ However, it has also performed some API expansion on CrossC2 to control the UNIX
 
 ## basic function
 
-**`Interpreter related plug-ins`**
-    
-**`Password dump module`**
-
-**`Authentication backdoor modules`**
-
-**`Information collection modules`**
-
-**`Traffic proxy module`**
-
-**`Keylogger module`**
-
-**`Privilege promotion module`**
-
-**`Task management module`**
+**`Interpreter related plug-ins`**、**`Password dump module`**、**`Authentication backdoor modules`**、**`Information collection modules`**、**`Traffic proxy module`**、**`Keylogger module`**、**`Privilege promotion module`**、**`Task management module`**
 
 See wiki for details: [About CrossC2Kit](https://github.com/CrossC2/CrossC2Kit/wiki/About-CrossC2-Kit)
 
-## API 文档: 
+## API Reference: 
 
 Memory loading related API: [API wiki](https://gloxec.github.io/CrossC2/zh_cn/api)
 
