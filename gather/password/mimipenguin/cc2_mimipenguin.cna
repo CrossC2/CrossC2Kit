@@ -41,8 +41,8 @@ ssh_command_register("cc2_mimipenguin", "CrossC2 mimipenguin - dump the login pa
 sub openMimipenguinDialog {
     local('$bid $dialog');
     $bid = $1;
-    binput($bid[0], "cc2_mimipenguin");
-    cc2_mimipenguin($bid[0]);
+    binput($bid, "cc2_mimipenguin");
+    cc2_mimipenguin($bid);
 }
 
 sub cc2_mimipenguin_status {
