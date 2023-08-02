@@ -1,4 +1,4 @@
-include(script_resource("httprequest.cna"));
+include(script_resource("update_site/httprequest.cna"));
 popup generator {
     separator();
     item "&Update Script" {
@@ -44,7 +44,7 @@ sub getScriptDesc {
 sub updateScriptCallback {
     local('$action_type $scheme $host $port $uri $script_content $desc');
     $action_type = $2;
-    if ($action_type == 'UPDATE') {
+    if ($action_type eq "UPDATE !") {
         $scheme = $3['scheme'];
         $host = $3['host'];
         $port = $3['port'];
@@ -71,13 +71,9 @@ sub createScriptEditorCallback {
     local('$action_type $script_url $scheme $host $port $uri $desc $host_and_port $host_and_uri $script_content');
     $action_type = $2;
     println($action_type);
-    if ($action_type == 'edit') {
+    if ($action_type eq "edit") {
         $script_url = $3['script_url'];
         if ($script_url) {
-            println($script_url);
-            # http://1.1.1.1:801/aaaa
-            # https://1.2.2.2/cccc
-            println($script_url);
             $script_content = httpRequest("GET", $script_url, "");
             println($script_content);
             if ($script_content) {
