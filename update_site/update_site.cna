@@ -51,12 +51,6 @@ sub updateScriptCallback {
         $uri = $3['uri'];
         $script_content = $3['script_content'];
         $desc = $3['desc'];
-        # println('-----------');
-        # println($scheme);
-        # println($host);
-        # println($port);
-        # println($uri);
-        # println($desc);
         if ($scheme eq 'http') {
             site_kill($port, '/'.$uri);
             site_host($host, $port, '/'.$uri, $script_content, 'automatic', $desc, false);
